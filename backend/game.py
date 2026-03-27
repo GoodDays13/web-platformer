@@ -52,7 +52,7 @@ class Game:
         if velocity_diff != 0:
             sign = abs(velocity_diff) / velocity_diff
             velocity_diff = abs(velocity_diff)
-            self.player.velocity_x += sign * min(velocity_diff, PLAYER_ACCELERATION * delta_time)
+            self.player.velocity_x += sign * min(velocity_diff, (PLAYER_ACCELERATION if self.grounded else PLAYER_ACCELERATION * .3) * delta_time)
 
         if self.jumping:
             self.player.velocity_y = JUMP_VELOCITY
@@ -85,8 +85,10 @@ class Game:
                     self.jumping = False
                 elif prev_x + self.player.width <= platform.x:
                     self.player.x = platform.x - self.player.width
+                    self.player.velocity_x = 0
                 elif prev_x >= platform.x + platform.width:
                     self.player.x = platform.x + platform.width
+                    self.player.velocity_x = 0
 
         if self.player.x < 0:
             self.player.x = 0
