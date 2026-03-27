@@ -1,4 +1,5 @@
 import asyncio
+import copy
 import json
 import time
 import websockets
@@ -8,6 +9,7 @@ from game import Game
 
 # Track state per connection: websocket -> player_state
 connected_players: dict[websockets.ServerConnection, Game] = {}
+saves: dict[websockets.ServerConnection, Game] = {}
 
 def make_game():
     return Game()
@@ -85,7 +87,12 @@ async def handle_connection(websocket: websockets.ServerConnection):
 
                 if key:
                     # print(f"[{player_id}] {'pressed' if down else 'released'}: {key}")
-                    handle_input(connected_players[websocket], key, down)
+                    game = connected_players[websocket]
+                    if key == 'save':
+                        saves[websocket] = copy.deepcopy(game)
+                    elif key == 'load':
+                        connected_players[websocket] = copy.deepcopy(saves[websocket])
+                    handle_input(game, key, down)
             except json.JSONDecodeError:
                 print(f"[{player_id}] received invalid JSON")
 

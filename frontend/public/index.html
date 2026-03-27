@@ -41,12 +41,36 @@
     #status.disconnected {
       color: #f44336;
     }
+
+    button {
+      background: #1a1a1a;
+      color: #ccc;
+      border: 1px solid #333;
+      padding: 4px 12px;
+      font-family: monospace;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    button:active {
+      background: #2a2a2a;
+    }
   </style>
 </head>
 
 <body>
   <canvas id="game" width="800" height="400"></canvas>
   <div id="status" class="disconnected">disconnected</div>
+  <div style="display:flex;gap:8px;">
+    <button id="btn-save" onclick="sendKey('save')">save</button>
+    <button id="btn-load" onclick="sendKey('load')">load</button>
+  </div>
 
   <script>
     const canvas = document.getElementById('game');
@@ -110,6 +134,12 @@
         socket.send(JSON.stringify({key: e.code, down: false}));
       }
     });
+
+    function sendKey(type) {
+      if (socket?.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({key: type}));
+      }
+    }
 
     // -------------------------
     // Render loop — draw what server says

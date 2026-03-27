@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from constants import CANVAS_W, GRAVITY, PLAYER_SPEED, PLAYER_ACCELERATION, JUMP_VELOCITY, JUMP_DURATION, COYOTE_TIME, PLAYER_SIZE
 
 class Game:
+    save_state: Game | None
     player: GameObject
     platforms: list[GameObject]
     held_keys: set[str]
@@ -13,6 +14,7 @@ class Game:
     jumping: bool
 
     def __init__(self) -> None:
+        self.game = None
         self.player = GameObject(0, 0, 0, 0, PLAYER_SIZE, PLAYER_SIZE)
         self.platforms = [
             GameObject(0, 64, 0, 0, 32, 32),
