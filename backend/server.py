@@ -90,7 +90,7 @@ async def handle_connection(websocket: websockets.ServerConnection):
                     game = connected_players[websocket]
                     if key == 'save':
                         saves[websocket] = copy.deepcopy(game)
-                    elif key == 'load':
+                    elif key == 'load' and websocket in saves:
                         connected_players[websocket] = copy.deepcopy(saves[websocket])
                     handle_input(game, key, down)
             except json.JSONDecodeError:
