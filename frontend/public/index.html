@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CTF Platformer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: monospace;
+      color: #ccc;
+      gap: 12px;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      background: #111;
+      display: block;
+    }
+
+    #status {
+      font-size: 13px;
+      color: #555;
+    }
+
+    #status.connected {
+      color: #4caf50;
+    }
+
+    #status.disconnected {
+      color: #f44336;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="game" width="800" height="400"></canvas>
+  <div id="status" class="disconnected">disconnected</div>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const status = document.getElementById('status');
+
+    // Game state — only what the server tells us
+    let state = null;
+
+    // -------------------------
+    // WebSocket
+    // -------------------------
+    let socket;
+
+    function connect() {
+      socket = new WebSocket('ws://kaiden-thinkpadarch:8765');
+
+      socket.addEventListener('open', () => {
+        status.textContent = 'connected';
+        status.className = 'connected';
+      });
+
+      socket.addEventListener('close', () => {
+        status.textContent = 'disconnected — retrying...';
+        status.className = 'disconnected';
+        setTimeout(connect, 2000); // auto-reconnect
+      });
+
+      socket.addEventListener('message', (event) => {
+        // Server sends back authoritative state — just store it
+        state = JSON.parse(event.data);
+      });
+    }
+
+    connect();
+
+    // -------------------------
+    // Input — send to server, nothing else
+    // -------------------------
+    const KEYS = new Set([
+      'KeyW', 'KeyA', 'KeyS', 'KeyD',
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+      'Space'
+    ]);
+
+    document.addEventListener('keydown', (e) => {
+      if (!KEYS.has(e.code)) return;
+      if (e.repeat) return;
+      e.preventDefault();
+
+      if (socket?.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({key: e.code, down: true}));
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (!KEYS.has(e.code)) return;
+      e.preventDefault();
+
+      if (socket?.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({key: e.code, down: false}));
+      }
+    });
+
+    // -------------------------
+    // Render loop — draw what server says
+    // -------------------------
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (!state) {
+        // Waiting for first server message
+        ctx.fillStyle = '#333';
+        ctx.font = '14px monospace';
+        ctx.fillText('waiting for server...', 20, 30);
+        requestAnimationFrame(draw);
+        return;
+      }
+
+      state.forEach((item) => {
+        ctx.fillStyle = item.color;
+        ctx.fillRect(item.x, canvas.height - item.y - item.sizeY, item.sizeX, item.sizeY);
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
+</body>
+
+</html>
