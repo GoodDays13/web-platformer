@@ -128,7 +128,7 @@
 
       state.forEach((item) => {
         ctx.fillStyle = item.color;
-        ctx.fillRect(item.x, canvas.height - item.y - item.sizeY, item.sizeX, item.sizeY);
+        ctx.fillRect(item.x, canvas.height - item.y - item.height, item.width, item.height);
       });
 
       requestAnimationFrame(draw);

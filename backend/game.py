@@ -1,44 +1,49 @@
 import asyncio
-from player import Player
+from dataclasses import dataclass
 
 GRAVITY = 64
 
 class Game:
-    player: Player
+    player: GameObject
     held_keys: set
 
+    grounded: bool
+    jumping: bool
+
     def __init__(self) -> None:
-        self.player = Player()
+        self.player = GameObject(0, 0, 0, 0, 32, 32)
         self.held_keys = set()
+        self.grounded = False
+        self.jumping = False
 
     def stop_jump(self):
-        self.player.jumping = False
+        self.jumping = False
 
     def handle_input(self, key, down):
         if key == 'Space':
-            if down and self.player.grounded:
-                self.player.jumping = True
-                self.player.grounded = False
+            if down and self.grounded:
+                self.jumping = True
+                self.grounded = False
                 asyncio.get_event_loop().call_later(.15, self.stop_jump)
             else:
-                self.player.jumping = False
+                self.jumping = False
 
     def update(self, delta_time):
-        self.player.velocity_target_x = 0
+        velocity_target_x = 0
         if 'KeyA' in self.held_keys:
-            self.player.velocity_target_x -= 512
+            velocity_target_x -= 512
         if 'KeyD' in self.held_keys:
-            self.player.velocity_target_x += 512
+            velocity_target_x += 512
 
-        velocity_diff = self.player.velocity_target_x - self.player.velocity_x
+        velocity_diff = velocity_target_x - self.player.velocity_x
         if velocity_diff != 0:
             sign = abs(velocity_diff) / velocity_diff
             velocity_diff = abs(velocity_diff)
             self.player.velocity_x += sign * min(velocity_diff, 32)
 
-        if self.player.jumping:
+        if self.jumping:
             self.player.velocity_y = 512
-        elif not self.player.grounded:
+        elif not self.grounded:
             self.player.velocity_y -= GRAVITY # gravity
 
         self.player.x += self.player.velocity_x * delta_time
@@ -46,8 +51,22 @@ class Game:
 
         if self.player.y < 0:
             self.player.y = 0
-            self.player.grounded = True
+            self.grounded = True
             self.player.velocity_y = 0
 
-        if not self.player.grounded:
+        if not self.grounded:
             self.player.velocity_y -= 1 * delta_time
+
+
+@dataclass
+class GameObject:
+    # left
+    x: float
+    # bottom
+    y: float
+    # velocity
+    velocity_x: float
+    velocity_y: float
+    width: float
+    height: float
+

@@ -44,8 +44,8 @@ async def game_loop():
                     {
                         "x": game.player.x,
                         "y": game.player.y,
-                        "sizeX": game.player.size_x,
-                        "sizeY": game.player.size_y,
+                        "width": game.player.width,
+                        "height": game.player.height,
                         "color": "#4fc3f7",
                     },
                 ]))
