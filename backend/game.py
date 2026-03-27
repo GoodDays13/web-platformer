@@ -1,6 +1,8 @@
 import asyncio
 from dataclasses import dataclass
 
+from constants import CANVAS_W
+
 GRAVITY = 64
 
 class Game:
@@ -39,7 +41,7 @@ class Game:
         if velocity_diff != 0:
             sign = abs(velocity_diff) / velocity_diff
             velocity_diff = abs(velocity_diff)
-            self.player.velocity_x += sign * min(velocity_diff, 32)
+            self.player.velocity_x += sign * min(velocity_diff, 48)
 
         if self.jumping:
             self.player.velocity_y = 512
@@ -53,6 +55,13 @@ class Game:
             self.player.y = 0
             self.grounded = True
             self.player.velocity_y = 0
+
+        if self.player.x < 0:
+            self.player.x = 0
+            self.player.velocity_x = 0
+        elif self.player.x + self.player.width > CANVAS_W:
+            self.player.x = CANVAS_W - self.player.width
+            self.player.velocity_x = 0
 
         if not self.grounded:
             self.player.velocity_y -= 1 * delta_time
