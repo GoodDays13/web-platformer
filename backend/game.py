@@ -1,12 +1,13 @@
 import asyncio
 from dataclasses import dataclass
 
-from constants import CANVAS_W, GRAVITY, PLAYER_SPEED, PLAYER_ACCELERATION, JUMP_VELOCITY, JUMP_DURATION, COYOTE_TIME, PLAYER_SIZE
+from constants import CANVAS_W, CANVAS_H, GRAVITY, PLAYER_SPEED, PLAYER_ACCELERATION, JUMP_VELOCITY, JUMP_DURATION, COYOTE_TIME, PLAYER_SIZE
 
 class Game:
     save_state: Game | None
     player: GameObject
     platforms: list[GameObject]
+    camera_y: float
     held_keys: set[str]
 
     grounded: bool
@@ -20,6 +21,7 @@ class Game:
             GameObject(0, 64, 0, 0, 32, 32),
             GameObject(256, 128, 0, 0, 64, 32)
         ]
+        self.camera_y = 0
         self.held_keys = set()
         self.grounded = False
         self.coyote = 0
@@ -92,6 +94,11 @@ class Game:
         elif self.player.x + self.player.width > CANVAS_W:
             self.player.x = CANVAS_W - self.player.width
             self.player.velocity_x = 0
+
+        target_camera_y = self.player.y - (CANVAS_H / 2 - self.player.width)
+        camera_delta_y = target_camera_y - self.camera_y
+        self.camera_y += camera_delta_y * 10 * delta_time
+        self.camera_y = max(0, self.camera_y)
 
 
 # y is up, (x, y) is bottom-left

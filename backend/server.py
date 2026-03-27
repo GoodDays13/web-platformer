@@ -4,7 +4,7 @@ import json
 import time
 import websockets
 
-from constants import TARGET_TICK_RATE, TICK_INTERVAL
+from constants import CANVAS_H, TARGET_TICK_RATE, TICK_INTERVAL
 from game import Game
 
 # Track state per connection: websocket -> player_state
@@ -40,7 +40,7 @@ async def game_loop():
                 await websocket.send(json.dumps([
                     {
                         "x": game.player.x,
-                        "y": game.player.y,
+                        "y": game.player.y - game.camera_y,
                         "width": game.player.width,
                         "height": game.player.height,
                         "color": "#4fc3f7",
@@ -48,7 +48,7 @@ async def game_loop():
                     *[
                         {
                             "x": p.x,
-                            "y": p.y,
+                            "y": p.y - game.camera_y,
                             "width": p.width,
                             "height": p.height,
                             "color": "#81c784",
