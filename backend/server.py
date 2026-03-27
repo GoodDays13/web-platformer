@@ -3,16 +3,11 @@ import json
 import time
 import websockets
 
+from constants import TARGET_TICK_RATE, TICK_INTERVAL
 from game import Game
 
 # Track state per connection: websocket -> player_state
 connected_players: dict[websockets.ServerConnection, Game] = {}
-
-CANVAS_W = 800
-CANVAS_H = 400
-PLAYER_SPEED = 5
-TARGET_TICK_RATE = 64      # ticks per second
-TICK_INTERVAL = 1.0 / TARGET_TICK_RATE
 
 def make_game():
     return Game()
