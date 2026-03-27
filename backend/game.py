@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from constants import CANVAS_W
 
-GRAVITY = 64
+GRAVITY = 4096
 
 class Game:
     player: GameObject
@@ -41,12 +41,12 @@ class Game:
         if velocity_diff != 0:
             sign = abs(velocity_diff) / velocity_diff
             velocity_diff = abs(velocity_diff)
-            self.player.velocity_x += sign * min(velocity_diff, 48)
+            self.player.velocity_x += sign * min(velocity_diff, 3072 * delta_time)
 
         if self.jumping:
             self.player.velocity_y = 512
         elif not self.grounded:
-            self.player.velocity_y -= GRAVITY # gravity
+            self.player.velocity_y -= GRAVITY * delta_time # gravity
 
         self.player.x += self.player.velocity_x * delta_time
         self.player.y += self.player.velocity_y * delta_time
@@ -62,9 +62,6 @@ class Game:
         elif self.player.x + self.player.width > CANVAS_W:
             self.player.x = CANVAS_W - self.player.width
             self.player.velocity_x = 0
-
-        if not self.grounded:
-            self.player.velocity_y -= 1 * delta_time
 
 
 @dataclass
