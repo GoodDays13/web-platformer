@@ -43,6 +43,16 @@ async def game_loop():
                         "height": game.player.height,
                         "color": "#4fc3f7",
                     },
+                    *[
+                        {
+                            "x": p.x,
+                            "y": p.y,
+                            "width": p.width,
+                            "height": p.height,
+                            "color": "#81c784",
+                        }
+                        for p in game.platforms
+                    ],
                 ]))
 
             except (websockets.exceptions.ConnectionClosed,
