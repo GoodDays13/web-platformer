@@ -16,7 +16,10 @@ class Game:
 
     def __init__(self) -> None:
         self.player = GameObject(0, 0, 0, 0, 32, 32)
-        self.platforms = [ GameObject(0, 64, 0, 0, 32, 32) ]
+        self.platforms = [
+            GameObject(0, 64, 0, 0, 32, 32),
+            GameObject(256, 128, 0, 0, 64, 32)
+        ]
         self.held_keys = set()
         self.grounded = False
         self.coyote = 0

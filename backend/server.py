@@ -84,7 +84,7 @@ async def handle_connection(websocket: websockets.ServerConnection):
                 down = data.get('down')
 
                 if key:
-                    print(f"[{player_id}] {'pressed' if down else 'released'}: {key}")
+                    # print(f"[{player_id}] {'pressed' if down else 'released'}: {key}")
                     handle_input(connected_players[websocket], key, down)
             except json.JSONDecodeError:
                 print(f"[{player_id}] received invalid JSON")
