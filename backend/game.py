@@ -19,7 +19,10 @@ class Game:
         self.player = GameObject(0, 0, 0, 0, PLAYER_SIZE, PLAYER_SIZE)
         self.platforms = [
             GameObject(0, 64, 0, 0, 32, 32),
-            GameObject(256, 128, 0, 0, 64, 32)
+            GameObject(256, 64 * 2, 0, 0, 64, 32),
+            GameObject(544, 64 * 3, 0, 0, 32, 32),
+            GameObject(544 + 64, 64 * 4.5, 0, 0, 32, 32),
+            GameObject(544 + 64 * 2, 64 * 6, 0, 0, 32, 32),
         ]
         self.camera_y = 0
         self.held_keys = set()
