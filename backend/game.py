@@ -24,9 +24,13 @@ class Game:
             GameObject(544 + 64 * 2, 64 * 6, 0, 0, 32, 32),
             GameObject(CANVAS_W - 16, 64 * 7.5, 0, 0, 32, 32),
             GameObject(576, 64 * 9, 0, 0, 32, 32),
-            GameObject(576 - 64, 64 * 11, 0, 0, 32 * 3, 32),
-            GameObject(256, 64 * 10, 0, 0, 64, 32),
-            GameObject(576 - 64, 64 * 12.5, 0, 0, 32 * 3, 32),
+            GameObject(576 - 32 * 3, 64 * 10.5, 0, 0, 32 * 4, 32),
+            GameObject(256, 64 * 5, 0, 0, 64, 32),
+            GameObject(256 + 32, 64 * 6, 0, 0, 32, 32),
+            GameObject(256, 64 * 7, 0, 0, 32, 32),
+            GameObject(256 + 32, 64 * 8, 0, 0, 32, 32),
+            GameObject(256, 64 * 9, 0, 0, 32, 32),
+            GameObject(256 - 128, 64 * 9, 0, 0, 32, 32),
         ]
         self.camera_y = 0
         self.held_keys = set()
