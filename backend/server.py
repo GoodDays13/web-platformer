@@ -112,15 +112,20 @@ async def handle_connection(websocket: websockets.ServerConnection):
             del connected_players[websocket]
         print(f"[-] Player {player_id} disconnected. Total: {len(connected_players)}")
 
-
 async def main():
     print("Server running on ws://localhost:8765")
+    loop = asyncio.get_running_loop()
+    stop = loop.create_future()
+
+    # Resolve the future on SIGTERM or SIGINT
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler(sig, stop.set_result, None)
 
     async with websockets.serve(handle_connection, "0.0.0.0", 8765):
         game_task = asyncio.create_task(game_loop())
 
         try:
-            await asyncio.Future()  # run forever
+            await stop  # run until a signal is received
         finally:
             game_task.cancel()
             try:
@@ -128,6 +133,6 @@ async def main():
             except asyncio.CancelledError:
                 pass
 
-
 if __name__ == "__main__":
+    import signal
     asyncio.run(main())
