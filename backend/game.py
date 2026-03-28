@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from constants import CANVAS_W, CANVAS_H, GRAVITY, PLAYER_SPEED, PLAYER_ACCELERATION, JUMP_VELOCITY, JUMP_DURATION, COYOTE_TIME, PLAYER_SIZE
 
 class Game:
-    timeout: asyncio.Task
     player: GameObject
     platforms: list[GameObject]
     camera_y: float
@@ -14,8 +13,7 @@ class Game:
     coyote: float
     jumping: bool
 
-    def __init__(self, timeout: asyncio.Task) -> None:
-        self.timeout = timeout
+    def __init__(self) -> None:
         self.player = GameObject(0, 0, 0, 0, PLAYER_SIZE, PLAYER_SIZE)
         self.platforms = [
             GameObject(0, 64, 0, 0, 32, 32),
