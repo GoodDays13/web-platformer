@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from constants import CANVAS_W, CANVAS_H, GRAVITY, PLAYER_SPEED, PLAYER_ACCELERATION, JUMP_VELOCITY, JUMP_DURATION, COYOTE_TIME, PLAYER_SIZE
 
 class Game:
-    save_state: Game | None
     player: GameObject
     platforms: list[GameObject]
     camera_y: float
