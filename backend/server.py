@@ -79,7 +79,7 @@ async def game_loop():
 
 
 async def handle_connection(websocket: websockets.ServerConnection):
-    player_id = websocket.remote_address
+    player_id = websocket.request.headers["X-Forwarded-For"] if "X-Forwarded-For" in websocket.request.headers else websocket.remote_address
     connected_players[websocket] = make_game(
         asyncio.create_task(close_after_timeout(websocket, 30))
     )
