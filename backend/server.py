@@ -82,8 +82,13 @@ async def handle_connection(websocket: websockets.ServerConnection):
         async for message in websocket:
             try:
                 data = json.loads(message)
+                message_type = data.get('type')
                 key = data.get('key')
                 down = data.get('down')
+
+                if message_type and message_type == 'ping':
+                    time = data.get('time')
+                    await websocket.send(json.dumps({'type': 'pong', 'time': time}))
 
                 if key:
                     # print(f"[{player_id}] {'pressed' if down else 'released'}: {key}")

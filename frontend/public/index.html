@@ -84,6 +84,7 @@
     // WebSocket
     // -------------------------
     let socket;
+    let ping = undefined;
 
     function connect() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -103,8 +104,23 @@
 
       socket.addEventListener('message', (event) => {
         // Server sends back authoritative state — just store it
-        state = JSON.parse(event.data);
+        const data = JSON.parse(event.data);
+        if (data.type === 'pong') {
+          const pingTime = Date.now() - ping;
+          status.textContent = `connected ${pingTime}ms`;
+          ping = undefined
+        } else {
+          state = data;
+        }
       });
+
+      setInterval(() => {
+        if (!ping && socket?.readyState === WebSocket.OPEN) {
+          const time = Date.now();
+          ping = time;
+          socket.send(JSON.stringify({type: "ping", time: time}));
+        }
+      }, 1000);
     }
 
     connect();
