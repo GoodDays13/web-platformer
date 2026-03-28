@@ -113,17 +113,17 @@
           state = data;
         }
       });
-
-      setInterval(() => {
-        if (!ping && socket?.readyState === WebSocket.OPEN) {
-          const time = Date.now();
-          ping = time;
-          socket.send(JSON.stringify({type: "ping", time: time}));
-        }
-      }, 1000);
     }
 
     connect();
+
+    setInterval(() => {
+      if (!ping && socket?.readyState === WebSocket.OPEN) {
+        const time = Date.now();
+        ping = time;
+        socket.send(JSON.stringify({type: "ping", time: time}));
+      }
+    }, 1000);
 
     // -------------------------
     // Input — send to server, nothing else
