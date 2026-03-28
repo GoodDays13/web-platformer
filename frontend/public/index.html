@@ -96,10 +96,14 @@
         status.className = 'connected';
       });
 
-      socket.addEventListener('close', () => {
-        status.textContent = 'disconnected — retrying...';
+      socket.addEventListener('close', (event) => {
         status.className = 'disconnected';
-        setTimeout(connect, 2000); // auto-reconnect
+        if (event.code === 4000) {
+          status.textContent = 'disconnected due to inactivity'
+        } else {
+          status.textContent = 'disconnected — retrying...';
+          setTimeout(connect, 2000); // auto-reconnect
+        }
       });
 
       socket.addEventListener('message', (event) => {

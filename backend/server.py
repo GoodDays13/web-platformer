@@ -11,8 +11,12 @@ from game import Game
 connected_players: dict[websockets.ServerConnection, Game] = {}
 saves: dict[websockets.ServerConnection, Game] = {}
 
-def make_game():
-    return Game()
+async def close_after_timeout(websocket: websockets.ServerConnection, delay: float):
+    await asyncio.sleep(30)
+    await websocket.close(code=4000, reason='Idle timeout')
+
+def make_game(timeout):
+    return Game(timeout)
 
 def handle_input(game: Game, key, down):
     if down:
@@ -76,7 +80,9 @@ async def game_loop():
 
 async def handle_connection(websocket: websockets.ServerConnection):
     player_id = id(websocket)
-    connected_players[websocket] = make_game()
+    connected_players[websocket] = make_game(
+        asyncio.create_task(close_after_timeout(websocket, 30))
+    )
     print(f"[+] Player {player_id} connected. Total: {len(connected_players)}")
 
     try:
@@ -91,13 +97,16 @@ async def handle_connection(websocket: websockets.ServerConnection):
                     time = data.get('time')
                     await websocket.send(json.dumps({'type': 'pong', 'time': time}))
 
-                if key:
+                elif key:
                     # print(f"[{player_id}] {'pressed' if down else 'released'}: {key}")
                     game = connected_players[websocket]
                     if key == 'save':
                         saves[websocket] = copy.deepcopy(game)
                     elif key == 'load' and websocket in saves:
                         connected_players[websocket] = copy.deepcopy(saves[websocket])
+                        game = connected_players[websocket]
+                    game.timeout.cancel()
+                    game.timeout = asyncio.create_task(close_after_timeout(websocket, 30))
                     handle_input(game, key, down)
             except json.JSONDecodeError:
                 print(f"[{player_id}] received invalid JSON")
