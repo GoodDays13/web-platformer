@@ -39,16 +39,16 @@ async def game_loop():
 
                 await websocket.send(json.dumps([
                     {
-                        "x": game.player.x,
-                        "y": game.player.y - game.camera_y,
+                        "x": round(game.player.x, 2),
+                        "y": round(game.player.y - game.camera_y, 2),
                         "width": game.player.width,
                         "height": game.player.height,
                         "color": "#4fc3f7",
                     },
                     *[
                         {
-                            "x": p.x,
-                            "y": p.y - game.camera_y,
+                            "x": round(p.x, 2),
+                            "y": round(p.y - game.camera_y, 2),
                             "width": p.width,
                             "height": p.height,
                             "color": "#81c784",
