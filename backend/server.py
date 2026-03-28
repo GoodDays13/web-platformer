@@ -54,6 +54,7 @@ async def game_loop():
                             "color": "#81c784",
                         }
                         for p in game.platforms
+                        if -p.height <= (p.y - game.camera_y) <= CANVAS_H
                     ],
                 ]))
 
