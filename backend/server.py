@@ -79,7 +79,7 @@ async def game_loop():
 
 
 async def handle_connection(websocket: websockets.ServerConnection):
-    player_id = id(websocket)
+    player_id = websocket.remote_address
     connected_players[websocket] = make_game(
         asyncio.create_task(close_after_timeout(websocket, 30))
     )
@@ -94,8 +94,7 @@ async def handle_connection(websocket: websockets.ServerConnection):
                 down = data.get('down')
 
                 if message_type and message_type == 'ping':
-                    time = data.get('time')
-                    await websocket.send(json.dumps({'type': 'pong', 'time': time}))
+                    await websocket.send('{"type":"pong"}')
 
                 elif key:
                     # print(f"[{player_id}] {'pressed' if down else 'released'}: {key}")

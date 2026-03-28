@@ -125,7 +125,7 @@
       if (!ping && socket?.readyState === WebSocket.OPEN) {
         const time = Date.now();
         ping = time;
-        socket.send(JSON.stringify({type: "ping", time: time}));
+        socket.send('{"type":"ping"}');
       }
     }, 1000);
 
