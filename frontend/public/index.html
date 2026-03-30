@@ -88,8 +88,7 @@
 
     function connect() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      // const host = window.location.host;
-      const host = 'localhost:8765'
+      const host = window.location.host;
       socket = new WebSocket(`${protocol}//${host}`);
 
       socket.addEventListener('open', () => {
