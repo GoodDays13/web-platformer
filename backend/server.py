@@ -4,7 +4,7 @@ import json
 import time
 import websockets
 
-from constants import CANVAS_H, TARGET_TICK_RATE, TICK_INTERVAL
+from constants import CANVAS_H, TARGET_TICK_RATE, TICK_INTERVAL, HEIGHT_THRESHOLD, FLAG
 from game import Game
 
 # Track state per connection: websocket -> player_state
@@ -61,6 +61,7 @@ async def game_loop():
                         for p in game.platforms
                         if -p.height <= (p.y - game.camera_y) <= CANVAS_H
                     ],
+                    *([{"flag": FLAG}] if game.player.y > HEIGHT_THRESHOLD else []),
                 ]))
 
             except (websockets.exceptions.ConnectionClosed,
