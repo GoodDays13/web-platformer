@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    networks:
+      - proxy
+    restart: unless-stopped
+    tty: true
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Caddyfile config
+      - ./caddy:/etc/caddy:ro
+      # Caddy data (certs, ACME, etc.)
+      - ./data:/data
+      - ./config:/config
+      - ./public:/srv:ro
+    networks:
+      - proxy
+
+networks:
+  proxy:

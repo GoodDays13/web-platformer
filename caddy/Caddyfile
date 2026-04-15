@@ -1,0 +1,9 @@
+*
+
+@websockets {
+	header Connection *Upgrade*
+	header Upgrade websocket
+}
+reverse_proxy @websockets backend:8765
+
+file_server
